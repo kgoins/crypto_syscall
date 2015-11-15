@@ -1,9 +1,9 @@
 CC = gcc
-CFLAGS = -Wall -ansi -pthread
-SRC = hello_pthread.c
+CFLAGS = -Wall -ansi
+SRC = driver_cipher.c cipher.c
 OBJS = $(SRC:.c=.o)
 
-EXEC = cipher
+EXEC = run
 
 all: $(EXEC)
 
