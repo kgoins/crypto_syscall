@@ -16,6 +16,12 @@ int main (int argc, char const* argv[]) {
     printf("Size of cipher msg: %d\n", cipher->textLen);
     printf("Cipher text: %s\n", cipher->text);
 
+    sub(cipher);
+    printf("Cipher text: %s\n", cipher->text);
+
+    sub(cipher);
+    printf("Cipher text: %s\n", cipher->text);
+
     destroyCipher(cipher);
 
     return 0;

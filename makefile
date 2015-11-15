@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -ansi
-SRC = driver_cipher.c cipher.c
+SRC = driver_cipher.c cipher.c cipherAlgs.c
 OBJS = $(SRC:.c=.o)
 
 EXEC = run
