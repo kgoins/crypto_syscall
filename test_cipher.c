@@ -93,16 +93,24 @@ int main (int argc, char const* argv[]) {
     char subTest[] = "Hello World!";
     char transTest_0[] = "Hell";
     char transTest_1[] = "HHHello";
+    char truncationTest[1030];
 
     /* run tests */
     printf("Sub alg test on Hello World!\n");
-    /* run_test(subTest, lkey, nkey); */
+    run_test(subTest, lkey, nkey);
 
     printf("Test trans alg with only one quad\n");
-    /* run_test(transTest_0, lkey, nkey); */
+    run_test(transTest_0, lkey, nkey);
 
     printf("Trans alg test: 3 char last quad \n");
     run_test(transTest_1, lkey, nkey);
+
+    printf("Creating huge string to test truncation\n");
+    int i;
+    for (i = 0; i < 1030; i++)
+        truncationTest[i] = 'x';
+    truncationTest[1030] = '\0';
+    run_test(truncationTest, lkey, nkey);
 
 
     return 0;

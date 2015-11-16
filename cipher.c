@@ -5,7 +5,7 @@ int cipher (char* text, int lkey, int nkey) {
     int textLength = processInput(text);
 
     /* run encryption algorithms */
-    /* sub(text, lkey, nkey, textLength); */
+    sub(text, lkey, nkey, textLength);
     trans(text, textLength);
 
     return textLength;
