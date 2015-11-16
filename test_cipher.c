@@ -12,6 +12,8 @@ int run_test (char* msg, int lkey, int nkey) {
     char* msgCopy;
     int i = 0, msgLen = 0, testErr = 0;
 
+    printf("running test\n");
+
     /* get length and sanitize msg */
     msgLen = processInput(msg);
 
@@ -20,8 +22,11 @@ int run_test (char* msg, int lkey, int nkey) {
     if(msgCopy == NULL)
         return MALLOC_ERR;
 
-    while(msg[i] != '\0')
+    i = 0;
+    while(msg[i] != '\0') {
         msgCopy[i] = msg[i];
+        ++i;
+    }
     msgCopy[msgLen] = '\0';
     
     /* run encrypt and decrypt */
