@@ -3,26 +3,16 @@
 
 int main (int argc, char const* argv[]) {
     char msg[] = "Hello World";
-    int msgSize = sizeof(msg);
+    int lkey = 'B';
+    int nkey = 'B';
 
-    printf("Size of msg: %d\n", msgSize);
+    printf("plaintext message: %s\n", msg);
 
-    cipher_t* cipher = createCipher(msg,12,10);
-    if (cipher == NULL) {
-        printf("Cipher creation failed!\n");
-        return -1;
-    }
+    cipher(msg, lkey, nkey);
+    printf("encrypted message: %s\n", msg);
 
-    printf("Size of cipher msg: %d\n", cipher->textLen);
-    printf("Cipher text: %s\n", cipher->text);
-
-    sub(cipher);
-    printf("Cipher text: %s\n", cipher->text);
-
-    sub(cipher);
-    printf("Cipher text: %s\n", cipher->text);
-
-    destroyCipher(cipher);
+    cipher(msg, -lkey, -nkey);
+    printf("decrypted message: %s\n", msg);
 
     return 0;
 }
