@@ -1,6 +1,17 @@
 #include "cipher.h"
 
 int cipher (char* text, int lkey, int nkey) {   
+    
+    int textLength = processInput(text);
+
+    /* run encryption algorithms */
+    /* sub(text, lkey, nkey, textLength); */
+    trans(text, textLength);
+
+    return textLength;
+}
+
+int processInput (char* text) {
     int textLength = 0;
 
     /* calculate text length */
@@ -16,10 +27,6 @@ int cipher (char* text, int lkey, int nkey) {
         text[textLength] = '\0';
     }
 
-    /* run encryption algorithms */
-    sub(text, lkey, nkey, textLength);
-    trans(text, textLength);
-
     return textLength;
 }
 
@@ -34,7 +41,6 @@ void sub (char* text, int lkey, int nkey, int textLength) {
     for (i = 0; i < textLength; i++) {
         /* text[i] is upper case letter */
         if(text[i] >= 'A' && text[i] <= 'Z') {
-            printf("%c is an upper case letter\n", text[i]);
             x = (text[i] - 'A' + lkeyHash) % 26;
 
             if (decrypt)
@@ -46,7 +52,6 @@ void sub (char* text, int lkey, int nkey, int textLength) {
         }
         /* text[i] is lower case letter */
         else if(text[i] >= 'a' && text[i] <= 'z') {
-            printf("%c is a lower case letter\n", text[i]);
             x = (text[i] - 'a' + lkeyHash) % 26;
             offset = (decrypt) ? 
                 ( ( (x - 'A') & 0x1 ) ? 'a' : 'A' ) :
@@ -55,14 +60,25 @@ void sub (char* text, int lkey, int nkey, int textLength) {
         }
         /* text[i] is digit */
         else if(text[i] >= '0' && text[i] <= '9') {
-            printf("%c is a number \n", text[i]);
             text[i] = ((text[i] - '0' + nkeyHash) % 10) + '0';
         }
         else
-            printf("%c is an ascii character\n", text[i]);
+            continue;
     }
 }
 
 void trans (char* text, int textLength) {
+    char temp; int i;
+    int lastQuad = textLength % 4;
+
+    for (i = 0; i < (textLength - lastQuad); i+=4) {
+        temp = text[i];
+        text[i] = text[i+2];
+        text[i+2] = temp;
+
+        temp = text[i+1];
+        text[i+1] = text[i+3];
+        text[i+3] = temp;
+    }
 
 }
