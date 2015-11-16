@@ -71,6 +71,7 @@ void trans (char* text, int textLength) {
     char temp; int i;
     int lastQuad = textLength % 4;
 
+    /* process the text up to the last quad */
     for (i = 0; i < (textLength - lastQuad); i+=4) {
         temp = text[i];
         text[i] = text[i+2];
@@ -79,6 +80,24 @@ void trans (char* text, int textLength) {
         temp = text[i+1];
         text[i+1] = text[i+3];
         text[i+3] = temp;
-    }
+    } /* i holds the start of the last quad */
 
+    /* process the last quad if exists */
+    if (lastQuad !=0) 
+        switch(lastQuad) {
+            case 1:
+                break;
+
+            case 2:
+                temp = text[i];
+                text[i] = text[i+1];
+                text[i+1] = temp;
+                break;
+
+            case 3:
+                temp = text[i];
+                text[i] = text[i+2];
+                text[i+2] = temp;
+                break;
+        }
 }

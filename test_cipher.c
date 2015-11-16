@@ -6,39 +6,53 @@
 /* error codes */
 #define MALLOC_ERR 1
 #define TEST_FAIL 2
+#define LENGTH_MISMATCH 3
 
 
-int run_test (char* msg, int lkey, int nkey) {
-    char* msgCopy;
-    int i = 0, msgLen = 0, testErr = 0;
-
-    printf("running test\n");
+void run_test (char* msg, int lkey, int nkey) {
+    char* msgCopy = NULL;
+    int i = 0;
+    int msgOrigLen = 0, msgEncLen = 0, msgDecLen = 0;
+    int testErr = 0;
 
     /* get length and sanitize msg */
-    msgLen = processInput(msg);
+    msgOrigLen = processInput(msg);
 
     /* copy sanitized msg to msgCopy */
-    msgCopy = (char*) malloc(msgLen * sizeof(char));
-    if(msgCopy == NULL)
-        return MALLOC_ERR;
+    msgCopy = (char*) malloc(msgOrigLen * sizeof(char));
+    if(msgCopy == NULL) {
+        printf("Malloc Error!\n");
+        return;
+    }
 
     i = 0;
     while(msg[i] != '\0') {
         msgCopy[i] = msg[i];
         ++i;
     }
-    msgCopy[msgLen] = '\0';
+    msgCopy[msgOrigLen] = '\0';
     
     /* run encrypt and decrypt */
     printf("plaintext message: %s\n", msg);
+    printf("size: %d\n", msgOrigLen);
 
-    cipher(msg, lkey, nkey);
+    msgEncLen = cipher(msg, lkey, nkey);
     printf("encrypted message: %s\n", msg);
+    printf("size: %d\n", msgEncLen);
 
-    cipher(msg, -lkey, -nkey);
+    msgDecLen = cipher(msg, -lkey, -nkey);
     printf("decrypted message: %s\n", msg);
+    printf("size: %d\n", msgDecLen);
+
+    /* test message lengths to origional */
+    if (msgEncLen != msgOrigLen || msgDecLen != msgOrigLen) {
+        testErr = LENGTH_MISMATCH;
+        goto handle_errs;
+    }
 
     /* compare decrypted and origional msg */
+    printf("Origional message: %s\n", msgCopy);
+
     i = 0;
     while(msg[i] != '\0') {
         if (msg[i] != msgCopy[i]) {
@@ -47,36 +61,45 @@ int run_test (char* msg, int lkey, int nkey) {
         } else ++i;
     }
 
+    /* handle errors */
+handle_errs:
+    switch(testErr) {
+        case 0:
+            printf("Test Passed!\n");
+            break;
+        case TEST_FAIL:
+            printf("Test Failed: Strings not equal\n");
+            break;
+        case LENGTH_MISMATCH:
+            printf("Test Failed: Length mismatch\n");
+            break;
+    }
+
+
+    printf("\n");
     free(msgCopy);
-    return testErr;
 }
 
 int main (int argc, char const* argv[]) {
-    int testErr;
-
     /* test keys */
     int lkey = 'B';
     int nkey = 'B';
 
     /* test strings */
-    /* char subTest[] = "Hello World!"; */
-    char transTest_0[] = "Hell"; /* single quad */
+    char subTest[] = "Hello World!";
+    char transTest_0[] = "Hell";
+    char transTest_1[] = "Hellooo";
 
     /* run tests */
-    testErr = run_test(transTest_0, lkey, nkey);
+    printf("Sub alg test on Hello World!\n");
+    run_test(subTest, lkey, nkey);
 
-    /* handle errors */
-    switch(testErr) {
-        case 0:
-            printf("Test Passed!\n");
-            break;
-        case MALLOC_ERR:
-            printf("Malloc Error\n");
-            break;
-        case TEST_FAIL:
-            printf("Test Failed\n");
-            break;
-    }
+    printf("Test trans alg with only one quad\n");
+    run_test(transTest_0, lkey, nkey);
+
+    printf("Trans alg test: 3 char last quad \n");
+    run_test(transTest_1, lkey, nkey);
+
 
     return 0;
 }
