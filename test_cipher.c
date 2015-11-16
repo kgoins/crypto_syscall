@@ -35,11 +35,15 @@ void run_test (char* msg, int lkey, int nkey) {
     /* run encrypt and decrypt */
     printf("plaintext message: %s\n", msg);
     printf("size: %d\n", msgOrigLen);
+    printf("\n");
 
+    printf("Enryption system errors:\n");
     msgEncLen = cipher(msg, lkey, nkey);
     printf("encrypted message: %s\n", msg);
     printf("size: %d\n", msgEncLen);
+    printf("\n");
 
+    printf("Decryption system errors:\n");
     msgDecLen = cipher(msg, -lkey, -nkey);
     printf("decrypted message: %s\n", msg);
     printf("size: %d\n", msgDecLen);
@@ -88,14 +92,14 @@ int main (int argc, char const* argv[]) {
     /* test strings */
     char subTest[] = "Hello World!";
     char transTest_0[] = "Hell";
-    char transTest_1[] = "Hellooo";
+    char transTest_1[] = "HHHello";
 
     /* run tests */
     printf("Sub alg test on Hello World!\n");
-    run_test(subTest, lkey, nkey);
+    /* run_test(subTest, lkey, nkey); */
 
     printf("Test trans alg with only one quad\n");
-    run_test(transTest_0, lkey, nkey);
+    /* run_test(transTest_0, lkey, nkey); */
 
     printf("Trans alg test: 3 char last quad \n");
     run_test(transTest_1, lkey, nkey);

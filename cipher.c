@@ -15,8 +15,9 @@ int processInput (char* text) {
     int textLength = 0;
 
     /* calculate text length */
-    while(text[textLength] != '\0')
+    while(text[textLength] != '\0') {
         ++textLength;
+    }
 
     /* account for ending null terminator */
     textLength += 1;
