@@ -1,24 +1,28 @@
-#include "cipher.h"
+#define CIPHER_TEXT_MAX 1025
 
 int cipher (char* text, int lkey, int nkey) {   
-    
-    int textLength = processInput(text);
+    /* cipher root vars */
+    int textLength;
 
-    /* run encryption algorithms */
-    sub(text, lkey, nkey, textLength);
-    trans(text, textLength);
+    /* substitution alg vars */
+    int x, offset, lkeyHash, nkeyHash, decryptFlag;
 
-    return textLength;
-}
+    /* transposition alg vars */
+    int lastQuad;
 
-int processInput (char* text) {
-    int textLength = 0;
+    /* temp vars */
+    int i; char temp;
+
+    /**********************/
+    /* process input text */ 
+    /**********************/
+
+    textLength = 0;
 
     /* calculate text length */
     while(text[textLength] != '\0') {
         ++textLength;
     }
-
     /* account for ending null terminator */
     textLength += 1;
 
@@ -28,23 +32,24 @@ int processInput (char* text) {
         text[textLength] = '\0';
     }
 
-    return textLength;
-}
+    /* textLength is now accurate and text is sanitized */
+    /* run encryption algorithms */
 
-void sub (char* text, int lkey, int nkey, int textLength) {
-    int i, x, offset;
+    /*****************************/
+    /* run substitution on text */
+    /*****************************/
+    lkeyHash = (lkey % 26) + 26;
+    nkeyHash = (nkey % 10) + 10;
 
-    int lkeyHash = (lkey % 26) + 26;
-    int nkeyHash = (nkey % 10) + 10;
+    decryptFlag = ( (lkey < 0) && (lkey & 0x1) );
 
-    int decrypt = ( (lkey < 0) && (lkey & 0x1) );
-
+    /* main substitution loop */
     for (i = 0; i < textLength; i++) {
         /* text[i] is upper case letter */
         if(text[i] >= 'A' && text[i] <= 'Z') {
             x = (text[i] - 'A' + lkeyHash) % 26;
 
-            if (decrypt)
+            if (decryptFlag)
                 offset = ((x-'A') & 0x1) ? 'A':'a';
             else
                 offset = ((x-'A') & 0x1) ? 'a':'A';
@@ -54,7 +59,7 @@ void sub (char* text, int lkey, int nkey, int textLength) {
         /* text[i] is lower case letter */
         else if(text[i] >= 'a' && text[i] <= 'z') {
             x = (text[i] - 'a' + lkeyHash) % 26;
-            offset = (decrypt) ? 
+            offset = (decryptFlag) ? 
                 ( ( (x - 'A') & 0x1 ) ? 'a' : 'A' ) :
                 ( ( (x - 'A') & 0x1 ) ? 'A' : 'a') ;
             text[i] = x + offset;
@@ -65,13 +70,12 @@ void sub (char* text, int lkey, int nkey, int textLength) {
         }
         else
             continue;
-    }
-}
-
-void trans (char* text, int textLength) {
-    char temp; int i;
-    int lastQuad = textLength % 4;
-
+    } /***** END Substitution ******/
+    
+    /*****************************/
+    /* run transposition on text */
+    /*****************************/
+    lastQuad = textLength % 4;
     /* process the text up to the last quad */
     for (i = 0; i < (textLength - lastQuad); i+=4) {
         temp = text[i];
@@ -94,11 +98,12 @@ void trans (char* text, int textLength) {
                 text[i] = text[i+1];
                 text[i+1] = temp;
                 break;
-
             case 3:
                 temp = text[i];
                 text[i] = text[i+2];
                 text[i+2] = temp;
                 break;
-        }
+        }/***** END Transposition ******/
+
+    return textLength;
 }
