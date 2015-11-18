@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -ansi -g
-SRC = cipher.c test_cipher.c
+SRC = sys_cipher.c test_sys_cipher.c
 OBJS = $(SRC:.c=.o)
 
 EXEC = run
